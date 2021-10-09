@@ -1,4 +1,5 @@
 var CURRENT_LOTTERY_NUMBER;
+var CURRENT_LOT_NUM_TIME;
 var CURRENT_GUESSES_ARRAY = new Array();
 
 function startCountdown(){
@@ -8,17 +9,14 @@ var timeLeft = 10;
 
 var timerId = setInterval(countdown, 1000);
 
-function countdown() {
+async function countdown() {
 if (timeLeft === 0) {
 	timeLeft = 10;
-	  fetch("/widget/getLotteryNumber.php", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-      })
-      .then((response) => response.text())
-      .then((res) => (document.getElementById("lotteryNumber").innerHTML = JSON.parse(res).lotteryNumber + " won previous round", CURRENT_LOTTERY_NUMBER = JSON.parse(res).lotteryNumber));
+	  const result = await this.getLotteryNumber();
+	  document.getElementById("lotteryNumber").innerHTML = JSON.parse(result).lotteryNumber + " won previous round";
+	  CURRENT_LOTTERY_NUMBER = JSON.parse(result).lotteryNumber;
+	  CURRENT_LOT_NUM_TIME = JSON.parse(result).createdAt;
+	  console.log(CURRENT_LOTTERY_NUMBER);
 	  var winners_string = "";
 	  for (var i = 0; i < CURRENT_GUESSES_ARRAY.length; i++) {
 		if (CURRENT_GUESSES_ARRAY[i].number != CURRENT_LOTTERY_NUMBER ){			
@@ -29,13 +27,15 @@ if (timeLeft === 0) {
 		}
 	  }
 	  var data = new Object();
-	  if(winners_string === ""){
+	  /*if(winners_string === ""){
 		winners_string = "No lucky contestants.";
-	  }
-	  document.getElementById("winners").innerHTML = winners_string;
+	  }*/
+	  //document.getElementById("winners").innerHTML = winners_string;
 	  data.winners = winners_string;
 	  data.number = CURRENT_LOTTERY_NUMBER;
-	  fetch("/widget/insertWinnersInDB.php", {
+	  data.lot_num_time = CURRENT_LOT_NUM_TIME;
+	  console.log("data.number ", data.number);
+	  /*fetch("/widget/insertWinnersInDB.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -43,7 +43,14 @@ if (timeLeft === 0) {
         body: JSON.stringify(data),
       })
 	  .then((response) => response.text())
-      .then((res) => (console.log(res)));
+      .then((res) => (console.log(res)));*/
+	  const status = await this.insertWinnersInDB(data);
+	  console.log(status);
+	  setTimeout(1500); 
+	  var all_winners = await this.getLastFiveWinnersFromDB(data);
+	  console.log("all winners: ", all_winners);
+	  document.getElementById("winners").innerHTML = all_winners;
+	  all_winners = "";
 	  CURRENT_GUESSES_ARRAY = [];
 	  winners_string = "";
 	  data = {};
@@ -57,12 +64,45 @@ if (timeLeft === 0) {
 
 function submit(){
 	var guess = new Array();
-	guess["name"] = document.getElementById("name").value;;
-	guess["number"] = document.getElementById("number").value;;
+	guess["name"] = document.getElementById("name").value;
+	guess["number"] = document.getElementById("number").value;
 	CURRENT_GUESSES_ARRAY.push(guess);
+	document.getElementById("name").value = "";
+	document.getElementById("number").value = "";
+}
+
+async function getLotteryNumber(){
+	return  fetch("/widget/getLotteryNumber.php", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+      })
+      .then((response) => response.text())
+      .then((res) => {return res;});
 
 }
 
-/*function getLotteryNumber(){
+async function insertWinnersInDB(data){
+	return fetch("/widget/insertWinnersInDB.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+        body: JSON.stringify(data),
+      })
+	  .then((response) => response.text())
+      .then((res) => {return res;});
+}
 
-}*/
+async function getLastFiveWinnersFromDB(data){
+	return fetch("/widget/getLastFiveWinnersFromDB.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+        body: JSON.stringify(data),
+      })
+	  .then((response) => response.text())
+      .then((res) => {return res;});
+}
