@@ -11,38 +11,43 @@ var timerId = setInterval(countdown, 1000);
 function countdown() {
 if (timeLeft === 0) {
 	timeLeft = 10;
-	/*let xhr = new XMLHttpRequest();
-      xhr.open("GET", "fetch.php", true);
-      xhr.onload = function() {
-        document.getElementById("lotteryNumber") = xhr.response;
-      }
-      xhr.send();*/
-	  fetch("/widget/fetch.php", {
+	  fetch("/widget/getLotteryNumber.php", {
         method: "GET",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         },
-        //body: `x=${x}&y=${y}`,
       })
       .then((response) => response.text())
       .then((res) => (document.getElementById("lotteryNumber").innerHTML = JSON.parse(res).lotteryNumber + " won previous round", CURRENT_LOTTERY_NUMBER = JSON.parse(res).lotteryNumber));
-	  var winners_arr = new Array();
 	  var winners_string = "";
 	  for (var i = 0; i < CURRENT_GUESSES_ARRAY.length; i++) {
-		//console.log(CURRENT_GUESSES_ARRAY[i]); 
 		if (CURRENT_GUESSES_ARRAY[i].number != CURRENT_LOTTERY_NUMBER ){			
-			winners_arr.push(CURRENT_GUESSES_ARRAY[i]);
 			winners_string += CURRENT_GUESSES_ARRAY[i].name;
 			if (i+1 < CURRENT_GUESSES_ARRAY.length){
 				winners_string += ", ";
 			}
 		}
-		document.getElementById("winners").innerHTML = winners_string;
 	  }
-	  console.log(winners_string);
-	  console.log(winners_arr);
+	  var data = new Object();
+	  if(winners_string === ""){
+		winners_string = "No lucky contestants.";
+	  }
+	  document.getElementById("winners").innerHTML = winners_string;
+	  data.winners = winners_string;
+	  data.number = CURRENT_LOTTERY_NUMBER;
+	  fetch("/widget/insertWinnersInDB.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+        body: JSON.stringify(data),
+      })
+	  .then((response) => response.text())
+      .then((res) => (console.log(res)));
+	  CURRENT_GUESSES_ARRAY = [];
+	  winners_string = "";
+	  data = {};
 	  countdown();
-	//doSomething();
 } else {
 	targetElementId.innerHTML = "New winner in " + timeLeft + "s..";
 	timeLeft--;
