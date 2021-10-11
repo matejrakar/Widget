@@ -29,8 +29,8 @@
 		</tbody>
     </table>
 
-	<input class = "float-child" type = "Name" id="name" placeholder = "Name"> 
-	<input class = "float-child" type = "Number" id="number" placeholder="# number"> <br>
+	<input class = "float-child" type = "Name" id = "name" placeholder = "Name"> 
+	<input class = "float-child" type = "Number" id = "number" placeholder = "# number"> <br>
 	<p class = "center-text"><button class = "button" onclick="submit()">Submit</button></p>
 </body>
 </html>

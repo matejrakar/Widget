@@ -1,21 +1,67 @@
 .center-text{
 	text-align: center;
+	font: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
 
 .float-child {
-    width: 50%;
+    width: 26%;
     float: left;
-    /*padding: 20px;*/
-    /*border: 2px solid red;*/
+	margin-left:12%;
+	margin-right:12%;
+	margin-top:3%;
+	border-radius: 2px;
+	border-color: darkblue;
+	font: 18px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	height: 40px;
 }  
+.float-child::placeholder{
+	color:black;
+}
 
 .button {
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
 	margin-top: 12%;
-	margin-bottom: 0%
+	margin-bottom: 0%;
+
+	background: darkblue;
+	color:#fff;
+	border:none;
+	position:relative;
+	height:40px;
+	font: 1.6em "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	padding:0 2em;
+	cursor:pointer;
+	transition:800ms ease all;
+	outline:none;
+	border-radius: 2px;
 }  
+
+.button:hover{
+	background:#fff;
+	color:darkblue;
+}
+.button:before,.button:after{
+	content:'';
+	position:absolute;
+	top:0;
+	right:0;
+	height:2px;
+	width:0;
+	background: darkblue;
+	transition:400ms ease all;
+}
+.button:after{
+	right:inherit;
+	top:inherit;
+	left:0;
+	bottom:0;
+}
+.button:hover:before,.button:hover:after{
+	width:100%;
+	transition:800ms ease all;
+}
 
 body{
 	margin:0;
@@ -36,22 +82,17 @@ body{
   padding:12px 15px;
   border:1px solid #ddd;
   text-align: right;
-  font-size:16px;
+  font: 16px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
 
 .table th{
 	padding:12px 15px;
 	border:1px solid #ddd;
 	text-align: center;
-	font-size:16px;
+	font: 16px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 	background-color: darkblue;
 	color:#ffffff;
   }
-
-/*.table th{
-	background-color: darkblue;
-	color:#ffffff;
-}*/
 
 .table tbody tr:nth-child(even){
 	background-color: #f5f5f5;
@@ -60,21 +101,27 @@ body{
 .table td::before{
 	content: attr(data-label);
 	position: absolute;
-	left:4%;
+	left:1%;
 	width: 50%;
 	padding-left:15px;
-	font-size:15px;
-	font-weight: bold;
+	font: bold 16px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 	text-align: left;
 }
-/*responsive*/
 
-@media(max-width: 500px){
+@media(orientation:portrait) and (max-width: 500px){
+	.table{
+		width: 100%;
+		border-collapse: collapse;
+		overflow-y:scroll;
+		height:195px;
+		display:block;
+	}
+
 	.table thead{
 		display: none;
 	}
 
-	.table, .table tbody, .table tr, .table td{
+	.table tbody, .table tr, .table td{
 		display: block;
 		width: 100%;
 	}
@@ -84,7 +131,6 @@ body{
 	.table td{
 		text-align: right;
 		padding-left: 50%;
-		/*text-align: right;*/
 		position: relative;
 	}
 	.table td::before{
@@ -96,6 +142,66 @@ body{
 		font-size:15px;
 		font-weight: bold;
 		text-align: left;
+	}
+	.float-child {
+		width: 49%;
+		float: left;
+		margin-top: 3%;
+		margin-left:0%;
+		margin-right:1%;
+		margin-bottom: 6%;
+	} 
+}
+
+@media(orientation:landscape) and (max-width: 700px){
+	.table{
+		width: 50%;
+		border-collapse: collapse;
+		overflow-y:scroll;
+		height: 195px;
+		display:block;
+		float:left;
+	}
+
+	.table thead{
+		display: none;
+	}
+
+	.table tbody, .table tr, .table td{
+		display: block;
+		width: 100%;
+	}
+	.table tr{
+		margin-bottom:15px;
+	}
+	.table td{
+		text-align: right;
+		padding-left: 50%;
+		position: relative;
+	}
+	.table td::before{
+		content: attr(data-label);
+		position: absolute;
+		left:0;
+		width: 50%;
+		padding-left:15px;
+		font-size:15px;
+		font-weight: bold;
+		text-align: left;
+	}
+	.float-child {
+		width: 21%;
+		display:inline-block;
+		margin-top:8%;
+		margin-left:2%;
+		margin-right:2%;
+	}  
+	.button{
+		margin-left: auto;
+		margin-right: auto;
+		display: block;
+		margin-top: 15%;
+		margin-bottom: 0%
 	}
 }
 

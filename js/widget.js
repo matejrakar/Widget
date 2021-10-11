@@ -5,7 +5,7 @@ var CURRENT_GUESSES_ARRAY = new Array();
  * and then proceeds to set a countdown and starts it by calling countdown();
  */
 async function startCountdown(){
-	timeLeft = 10;
+	timeLeft = 30;
 	await this.addLastFiveWinnersInTable();
 	var timerId = setInterval(countdown, 1000);
 };
@@ -16,15 +16,14 @@ async function startCountdown(){
  */
 async function countdown() {
 	if (timeLeft === 0) {
-		timeLeft = 10;
+		timeLeft = 30;
 		var data = new Object();
 		const result = await this.getLotteryNumber();
-		//document.getElementById("lotteryNumber").innerHTML = JSON.parse(result).lotteryNumber + " won previous round";
 		data.lot_num = JSON.parse(result).lotteryNumber;
 		data.lot_num_time = JSON.parse(result).createdAt;
 		var winnersString = "";
 		for (var i = 0; i < CURRENT_GUESSES_ARRAY.length; i++) {
-			if (CURRENT_GUESSES_ARRAY[i].number != data.lot_num){			
+			if (CURRENT_GUESSES_ARRAY[i].number === data.lot_num){			
 				winnersString += CURRENT_GUESSES_ARRAY[i].name;
 				if (i+1 < CURRENT_GUESSES_ARRAY.length){
 					winnersString += ", ";
@@ -66,7 +65,6 @@ function submit(){
  */
 async function getLotteryNumber(){
 	return  fetch("/widget/getLotteryNumber.php", {
-        method: "GET",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         },
@@ -124,7 +122,12 @@ function setRowsAndTableData(allWinners){
 			cell = row.insertCell(0);
 			cell.id = "tdid" + i.toString();
 		}
-		document.getElementById("tdid"+i).dataset.label = allWinners[i]["WINNERS"];
-		document.getElementById("tdid"+i).innerHTML = allWinners[i]["LOTTERY_NUMBER"];
+		if(allWinners[i]["WINNERS"] == null){
+			document.getElementById("tdid"+i).dataset.label = "No contestants."
+		}
+		else{
+			document.getElementById("tdid"+i).dataset.label = allWinners[i]["WINNERS"];
+		}
+		document.getElementById("tdid"+i).innerHTML = "#" + allWinners[i]["LOTTERY_NUMBER"];
 	}
 }
