@@ -64,7 +64,7 @@ function submit(){
  * recieved from getLotteryNumber.php.
  */
 async function getLotteryNumber(){
-	return  fetch("/widget/getLotteryNumber.php", {
+	return  fetch("/widget/php/getLotteryNumber.php", {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         },
@@ -81,7 +81,7 @@ async function getLotteryNumber(){
  * @description Calls insertWinnersInDB.php, which inserts winners in database.
  */
 async function insertWinnersInDB(data){
-	return fetch("/widget/insertWinnersInDB.php", {
+	return fetch("/widget/php/insertWinnersInDB.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -97,7 +97,7 @@ async function insertWinnersInDB(data){
  * Then it sends this data as parameter to function setRowsAndTableData(allWinners).
  */
 async function addLastFiveWinnersInTable(){
-	fetch("/widget/getLastFiveWinnersFromDB.php", {
+	fetch("/widget/php/getLastFiveWinnersFromDB.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
